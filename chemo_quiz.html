@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>화학요법제학 퀴즈</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0d0d; --sf:#141414; --sf2:#1c1c1c; --sf3:#222;
+  --br:#2a2a2a; --br2:#333;
+  --gold:#c9a84c; --gold2:#e8c97a; --gdim:rgba(201,168,76,0.12);
+  --w:#f5f0e8; --w2:#c8c0b0; --w3:#7a7060;
+  --gn:#4caf82; --gnbg:rgba(76,175,130,0.1);
+  --rd:#cf6679; --rdbg:rgba(207,102,121,0.1);
+  --r:10px; --rl:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--w);min-height:100vh;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,0.007) 2px,rgba(255,255,255,0.007) 4px);pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:0 24px 80px;}
+
+/* HEADER */
+header{padding:40px 0 28px;border-bottom:1px solid var(--br);margin-bottom:36px;display:flex;align-items:flex-end;justify-content:space-between;}
+.logo-en{font-family:'Playfair Display',serif;font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+.logo-ko{font-size:22px;font-weight:700;color:var(--w);letter-spacing:-0.5px;}
+.logo-school{font-size:12px;color:var(--w2);letter-spacing:0.3px;margin-top:8px;}
+.logo-made{font-size:10px;color:var(--w3);margin-top:2px;letter-spacing:0.5px;}
+.hline{width:40px;height:1px;background:var(--gold);opacity:.5;align-self:center;}
+
+/* NAV */
+.nav-tabs{display:flex;border-bottom:1px solid var(--br);margin-bottom:36px;}
+.nav-tab{padding:12px 28px;font-size:13px;font-weight:500;color:var(--w3);cursor:pointer;border:none;background:none;font-family:'Noto Sans KR',sans-serif;letter-spacing:.5px;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;}
+.nav-tab.active{color:var(--gold2);border-bottom-color:var(--gold);}
+.nav-tab:hover:not(.active){color:var(--w2);}
+
+/* PAGE */
+.page{display:none;}
+.page.active{display:block;animation:fu .3s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* CONFIG */
+.config-block{border:1px solid var(--br);border-radius:var(--rl);padding:20px 24px;margin-bottom:28px;background:var(--sf);}
+.config-title{font-size:10px;letter-spacing:2px;color:var(--w3);text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:14px;}
+.config-row{display:flex;gap:24px;flex-wrap:wrap;align-items:center;}
+.cfg-lbl{font-size:11px;color:var(--w3);letter-spacing:.5px;white-space:nowrap;min-width:48px;}
+.chip-grp{display:flex;gap:6px;flex-wrap:wrap;}
+.chip{padding:6px 14px;border-radius:4px;border:1px solid var(--br2);background:transparent;color:var(--w3);font-size:12px;cursor:pointer;transition:all .15s;font-family:'Noto Sans KR',sans-serif;}
+.chip:hover{border-color:var(--gold);color:var(--gold2);}
+.chip.on{background:var(--gdim);border-color:var(--gold);color:var(--gold2);}
+.cfg-div{width:1px;height:24px;background:var(--br);flex-shrink:0;}
+
+/* QUIZ CARD */
+.quiz-card{background:var(--sf);border:1px solid var(--br);border-radius:var(--rl);padding:32px;margin-bottom:16px;position:relative;}
+.quiz-card::before{content:'';position:absolute;top:0;left:24px;right:24px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.4;}
+.quiz-tags{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;}
+.qtag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.8px;padding:3px 9px;border-radius:3px;border:1px solid;}
+.qtag-s{border-color:rgba(201,168,76,.3);color:var(--gold);background:var(--gdim);}
+.qtag-f{border-color:var(--br2);color:var(--w3);}
+.qtag-a{border-color:rgba(201,168,76,.2);color:#a89060;}
+.quiz-q{font-size:17px;font-weight:500;line-height:1.7;color:var(--w);margin-bottom:28px;letter-spacing:-.2px;}
+.dhl{color:var(--gold2);font-weight:700;}
+
+/* OPTIONS */
+.opts{display:flex;flex-direction:column;gap:8px;}
+.opt{display:flex;align-items:flex-start;gap:14px;padding:15px 18px;background:var(--sf2);border:1px solid var(--br);border-radius:var(--r);cursor:pointer;transition:all .15s;text-align:left;width:100%;font-family:'Noto Sans KR',sans-serif;}
+.opt:hover:not(:disabled){border-color:var(--br2);background:var(--sf3);}
+.opt-n{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--w3);min-width:18px;margin-top:2px;flex-shrink:0;}
+.opt-t{font-size:14px;line-height:1.65;color:var(--w2);}
+.opt.sel{border-color:var(--gold);background:var(--gdim);}
+.opt.sel .opt-n{color:var(--gold);}
+.opt.sel .opt-t{color:var(--w);}
+.opt.correct{border-color:rgba(76,175,130,.5);background:var(--gnbg);}
+.opt.correct .opt-n{color:var(--gn);}
+.opt.correct .opt-t{color:#a8dfc4;}
+.opt.wrong{border-color:rgba(207,102,121,.4);background:var(--rdbg);}
+.opt.wrong .opt-n{color:var(--rd);}
+.opt.wrong .opt-t{color:#f0a8b4;}
+.opt:disabled{cursor:default;}
+.sel-counter{margin-top:12px;font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--w3);text-align:right;transition:color .2s;}
+.sel-counter.ready{color:var(--gold);}
+
+/* BTN ROW */
+.btn-row{display:flex;gap:10px;justify-content:flex-end;}
+.btn{padding:11px 26px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:1px solid;font-family:'Noto Sans KR',sans-serif;letter-spacing:.3px;}
+.btn-p{background:var(--gold);color:#1a1200;border-color:var(--gold);}
+.btn-p:hover:not(:disabled){background:var(--gold2);border-color:var(--gold2);}
+.btn-p:disabled{opacity:.35;cursor:default;}
+.btn-g{background:transparent;color:var(--w2);border-color:var(--br2);}
+.btn-g:hover{border-color:var(--w3);color:var(--w);}
+
+/* RESULT PANEL */
+.rp{display:none;margin-top:18px;border-radius:var(--r);border:1px solid;overflow:hidden;animation:fu .25s ease;}
+.rp.show{display:block;}
+.rp-head{padding:14px 20px;display:flex;align-items:center;gap:10px;}
+.rp.pass{border-color:rgba(76,175,130,.3);}
+.rp.fail{border-color:rgba(207,102,121,.25);}
+.rp.pass .rp-head{background:var(--gnbg);border-bottom:1px solid rgba(76,175,130,.2);}
+.rp.fail .rp-head{background:var(--rdbg);border-bottom:1px solid rgba(207,102,121,.2);}
+.r-icon{font-size:16px;font-weight:700;}
+.rp.pass .r-icon{color:var(--gn);}
+.rp.fail .r-icon{color:var(--rd);}
+.r-verd{font-size:14px;font-weight:600;}
+.rp.pass .r-verd{color:#a8dfc4;}
+.rp.fail .r-verd{color:#f0a8b4;}
+.rp-body{padding:18px 20px;background:var(--sf);}
+.expl-sec{margin-bottom:14px;}
+.expl-lbl{font-size:10px;letter-spacing:1.5px;color:var(--w3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:8px;}
+.expl-it{display:flex;gap:10px;padding:10px 14px;border-radius:6px;margin-bottom:6px;background:var(--sf2);border-left:2px solid;}
+.expl-it.w-it{border-left-color:var(--rd);}
+.expl-it.c-it{border-left-color:var(--gn);}
+.ex-num{font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0;margin-top:1px;}
+.w-it .ex-num{color:var(--rd);}
+.c-it .ex-num{color:var(--gn);}
+.ex-txt{font-size:13px;color:var(--w2);line-height:1.5;margin-bottom:4px;}
+.ex-why{font-size:12px;color:var(--w3);line-height:1.5;}
+.ex-why strong{color:var(--gold);font-weight:500;}
+
+/* SEARCH */
+.search-bar{display:flex;gap:10px;margin-bottom:28px;}
+.s-inp{flex:1;background:var(--sf);border:1px solid var(--br);border-radius:var(--r);padding:13px 18px;font-size:14px;color:var(--w);font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .15s;}
+.s-inp::placeholder{color:var(--w3);}
+.s-inp:focus{border-color:var(--gold);}
+.btn-s{padding:13px 22px;background:var(--gold);color:#1a1200;border:1px solid var(--gold);border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;white-space:nowrap;}
+.btn-s:hover{background:var(--gold2);}
+.list-lbl{font-size:10px;letter-spacing:2px;color:var(--w3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:14px;}
+.dlist{display:flex;flex-direction:column;gap:4px;}
+.drow{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--sf);border:1px solid var(--br);border-radius:8px;cursor:pointer;transition:all .15s;}
+.drow:hover{border-color:var(--gold);background:var(--gdim);}
+.drow-nm{font-size:13px;font-weight:500;color:var(--w);}
+.drow-mt{font-size:11px;color:var(--w3);font-family:'JetBrains Mono',monospace;}
+
+/* SEARCH RESULT */
+.s-res{display:none;}
+.s-res.show{display:block;animation:fu .25s ease;}
+.back-btn{display:flex;align-items:center;gap:8px;background:none;border:none;color:var(--w3);font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:20px;padding:0;transition:color .15s;}
+.back-btn:hover{color:var(--gold2);}
+
+/* DRUG CARD */
+.dc{background:var(--sf);border:1px solid var(--br);border-radius:var(--rl);overflow:hidden;}
+.dc-top{padding:28px 28px 22px;border-bottom:1px solid var(--br);display:flex;gap:20px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;}
+.dc-name{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;color:var(--w);letter-spacing:-.3px;line-height:1.2;}
+.dc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.dtag{font-size:11px;padding:3px 10px;border-radius:3px;border:1px solid;font-family:'JetBrains Mono',monospace;letter-spacing:.3px;}
+.dtag-s{border-color:rgba(201,168,76,.3);color:var(--gold);background:var(--gdim);}
+.dtag-f{border-color:var(--br2);color:var(--w3);}
+.dtag-r{border-color:rgba(76,175,130,.3);color:var(--gn);background:rgba(76,175,130,.08);}
+.struct-box{background:var(--sf2);border:1px solid var(--br);border-radius:8px;padding:12px 14px;text-align:center;min-width:130px;flex-shrink:0;}
+.struct-box img{max-width:150px;max-height:100px;display:block;filter:invert(.9) sepia(.05);}
+.struct-msg{font-size:11px;color:var(--w3);font-family:'JetBrains Mono',monospace;}
+.dc-body{padding:24px 28px;}
+.pb{margin-bottom:22px;}
+.pb:last-child{margin-bottom:0;}
+.pb-head{font-size:10px;letter-spacing:2px;color:var(--gold);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.pb-head::after{content:'';flex:1;height:1px;background:var(--br);}
+.pb-items{display:flex;flex-direction:column;gap:6px;}
+.pb-it{font-size:13.5px;color:var(--w2);line-height:1.65;padding-left:16px;position:relative;}
+.pb-it::before{content:'';position:absolute;left:4px;top:10px;width:4px;height:1px;background:var(--w3);}
+.no-res{text-align:center;padding:60px;color:var(--w3);font-size:14px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="logo-en">Chemotherapy Pharmacology</div>
+    <div class="logo-ko">화학요법제학 퀴즈</div>
+    <div class="logo-school">전남대학교 약대 24학번</div>
+    <div class="logo-made">made by 김우혁</div>
+  </div>
+  <div class="hline"></div>
+</header>
+
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="switchTab('quiz',this)">퀴즈</button>
+  <button class="nav-tab" onclick="switchTab('search',this)">약물 검색</button>
+</div>
+
+<!-- QUIZ PAGE -->
+<div id="page-quiz" class="page active">
+  <div class="config-block">
+    <div class="config-title">// 퀴즈 설정</div>
+    <div class="config-row">
+      <span class="cfg-lbl">섹터</span>
+      <div class="chip-grp" id="sector-chips"></div>
+      <div class="cfg-div"></div>
+      <span class="cfg-lbl">정답 수</span>
+      <div class="chip-grp">
+        <div class="chip on" data-ans="random" onclick="pickAns(this)">랜덤</div>
+        <div class="chip" data-ans="1" onclick="pickAns(this)">1개</div>
+        <div class="chip" data-ans="2" onclick="pickAns(this)">2개</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-tags" id="quiz-tags"></div>
+    <div class="quiz-q" id="quiz-q">아래 버튼을 눌러 문제를 시작하세요.</div>
+    <div class="opts" id="opts"></div>
+    <div class="sel-counter" id="sel-counter"></div>
+    <div class="rp" id="rp">
+      <div class="rp-head">
+        <span class="r-icon" id="r-icon"></span>
+        <span class="r-verd" id="r-verd"></span>
+      </div>
+      <div class="rp-body" id="r-body"></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-g" onclick="generateQuiz()">새 문제</button>
+    <button class="btn btn-p" id="btn-sub" onclick="submitAnswer()" disabled>제출하기</button>
+  </div>
+</div>
+
+<!-- SEARCH PAGE -->
+<div id="page-search" class="page">
+  <div class="search-bar">
+    <input class="s-inp" id="s-inp" type="text" placeholder="약물명 검색 (예: Vancomycin, Artemisinin...)" onkeydown="if(event.key==='Enter')doSearch()">
+    <button class="btn-s" onclick="doSearch()">검색</button>
+  </div>
+
+  <div id="s-default">
+    <div class="list-lbl">// 전체 약물 목록</div>
+    <div class="dlist" id="all-list"></div>
+  </div>
+
+  <div class="s-res" id="s-res">
+    <button class="back-btn" onclick="goBack()"><span>←</span> 목록으로</button>
+    <div id="drug-detail"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ============================================================
+// DB
+// ============================================================
+const DB={
+  "합성항균제":{
+    "Sulfonamide (계열 공통)":{family:"Sulfonamide",routes:["경구투여"],mechanism:["세균의 dihydropteroate synthase의 기질인 PABA와 경쟁 → folic acid 유도체 합성 억제","thymidine 합성 차단 → DNA 합성 억제","합성항균제 계열, DHF 합성 저해 기전"],pk:["위장관 흡수 good: 경구투여","장기형: 90% 이상의 높은 혈장단백질 결합 → 과민반응의 원인"],ae:["가장 흔한 부작용: 피부발진의 과민반응","장기형: 스티븐스-존슨 증후군 (발생률 1%)","신생아: 빌리루빈과 경쟁 → 핵황달","BBB 통과, 태반통과, 모유로 분비 → 임산부/수유모 투약 위험군"],indication:[],misc:[]},
+    "Sulfisoxazole":{family:"Sulfonamide 단기형",routes:["경구투여"],mechanism:["PABA와 경쟁 → folic acid 유도체 합성 억제 → DNA 합성 억제"],pk:["단기형, 반감기 4-7시간, 1일 4회 투여"],ae:["감염·난용성·요로결석 잘 생김","피부발진 과민반응"],indication:[],misc:["단기형 Sulfonamide에 해당한다."]},
+    "Sulfadiazine":{family:"Sulfonamide 단기형",routes:["경구투여"],mechanism:["PABA와 경쟁 → folic acid 유도체 합성 억제 → DNA 합성 억제"],pk:["단기형, 반감기 4-7시간, 1일 4회 투여"],ae:["피부발진 과민반응"],indication:[],misc:["단기형 Sulfonamide에 해당한다."]},
+    "Sulfamethoxazole":{family:"Sulfonamide 중기형",routes:["경구투여"],mechanism:["PABA와 경쟁 → folic acid 유도체 합성 억제 → DNA 합성 억제"],pk:["중기형, 반감기 9-11시간, 1일 2회 투여"],ae:["피부발진 과민반응"],indication:[],misc:["중기형 Sulfonamide에 해당한다.","Trimethoprim과 5:1 복합제 = Bactrim (혈중농도비 20:1이 항균력 가장 높음)"]},
+    "Sulfapyridine":{family:"Sulfonamide 장기형",routes:["경구투여"],mechanism:["PABA와 경쟁 → folic acid 유도체 합성 억제 → DNA 합성 억제"],pk:["장기형, 반감기 40시간, 1일 1회 투여","흡수 빠르고 배설 늦어, 유효혈중농도 지속시간 길다"],ae:["스티븐스-존슨 증후군 가능성 → 장기복용 금지"],indication:[],misc:["장기형 Sulfonamide에 해당한다."]},
+    "Sulfasalazine":{family:"Sulfonamide (특수)",routes:["경구투여"],mechanism:["위장관 흡수 안 됨 → 장관내 오랜시간 머뭄","Sulfapyridine + salicylic acid의 diazo 결합 구조","경구 투여량의 1/3 소장 흡수, 2/3 대장에서 분해"],pk:["장기형: 90% 이상 혈장단백질 결합 → 과민반응 원인"],ae:["무과립증, 정자감소증"],indication:["궤양성 장염·크론병 염증성 장질환"],misc:["위장관 흡수되지 않는 설파제, 장관에서만 작용"]},
+    "Trimethoprim":{family:"Diaminopyrimidine",routes:["경구투여"],mechanism:["Dihydrofolate reductase 억제 → tetrahydrofolic acid 합성 차단 → DNA 합성 저해","세균 효소에 강력한 선택적 독성","인간의 folate reductase에도 친화성 일부 → 약간의 독성"],pk:["경구투여가 가능하다."],ae:["골수억제가 나타날 수 있다."],indication:["요로감염 치료에 사용된다.","설사 치료에 사용된다.","기관지염 치료에 사용된다."],misc:["Sulfamethoxazole과 5:1 복합 = Bactrim","SMZ 병용: THF 합성 연속 두 단계 차단 + 내성균 출현 억제 → 약효 상승","혈중농도비 20:1이 항균력 가장 높음"]}
+  },
+  "Quinolone계":{
+    "Quinolone (계열 공통)":{family:"Quinolone",routes:["경구투여"],mechanism:["미생물의 DNA gyrase와 topoisomerase IV 억제 → DNA합성저해","세균 선택적 독성: 인간의 Topoisomerase II와 결합 X","금속이온과 킬레이트 형성 → 유제품·제산제 병용 X"],pk:["위장관 96% 이상 흡수 good, 경구투여"],ae:["소화기 장애가 나타날 수 있다.","중추신경 장애가 나타날 수 있다.","피부반응이 나타날 수 있다."],indication:[],misc:["클로로퀸 합성 중간체인 날리딕산의 G(-) 항균 활성"]},
+    "Nalidixic acid (1세대)":{family:"Quinolone 1세대",routes:["경구투여"],mechanism:["DNA gyrase 억제 → DNA합성저해","좁은 범위 G(-) 항균력"],pk:["흡수 불완전, 조직 이행 불량, 신속 배설"],ae:["소화기 장애가 나타날 수 있다."],indication:["요로감염증에만 사용"],misc:["1세대 Quinolone에 해당한다."]},
+    "Ciprofloxacin (2세대)":{family:"Fluoroquinolone 2세대",routes:["경구투여"],mechanism:["DNA gyrase·topoisomerase IV 억제","그람음성·그람양성 둘 다 유효","MIC를 능가하는 약물농도 유지","신체조직으로 신속한 이행","유효농도의 장시간 유지","6번 위치 Fluoro 도입 → 지용성 증가 → 약효 증가","N1에 cyclopropyl 도입 → 항균범위 증가"],pk:["경구 흡수 신속, 위장관 96% 이상 흡수","태반 통과, 유즙으로 분비"],ae:["소화기 장애가 나타날 수 있다.","중추신경 장애가 나타날 수 있다.","피부반응이 나타날 수 있다."],indication:["대장균·엔테로박터균·수도모나스균·연쇄구균 유효","호흡기감염·인후감염·구강감염·신장-요로감염·임질 치료","요로감염증·호흡기 감염증을 비롯한 각종 감염증에 유효"],misc:["2세대 Fluoroquinolone에 해당한다.","piperazine에 alkyl기 도입 → CNS GABA 수용체 친화성 감소"]},
+    "Ofloxacin (2세대)":{family:"Fluoroquinolone 2세대",routes:["경구투여"],mechanism:["DNA gyrase·topoisomerase IV 억제","CYP1A2 억제"],pk:["경구 흡수가 신속하다."],ae:["소화기 장애가 나타날 수 있다.","중추신경 장애가 나타날 수 있다."],indication:["포도상구균·화농연쇄구균·폐렴구균·임균·대장균·녹농균 유효","인후두염·기관지염·신우신염·방광염·전립선염·담낭염·요도염·중이염 치료"],misc:["2세대 Fluoroquinolone에 해당한다.","CYP1A2 효소 억제"]},
+    "Fluoroquinolone 3세대":{family:"Fluoroquinolone 3세대",routes:["경구투여"],mechanism:["DNA gyrase·topoisomerase IV 억제"],pk:["길어진 반감기 → 1일 1회 투여","생체이용률 향상","호흡기 침투율 우수"],ae:["소화기 장애가 나타날 수 있다."],indication:["그람양성 구균 특히 페니실린 내성 폐렴구균에 강한 항균력","호흡기 감염 치료에 효과적"],misc:["3세대 Fluoroquinolone에 해당한다.","2세대에 비해 여러 면에서 개선된 성질"]}
+  },
+  "세포벽 합성 저해제":{
+    "Fosfomycin":{family:"Peptidoglycan 전구물질 생합성 억제제",routes:["경구투여","주사"],mechanism:["enolpyruvyl transferase(Enz-SH) 억제","Oxirane 산소에 양성자 첨가 → C2 탄소가 cysteine기 친핵 공격 → 효소와 공유결합 → 효소 억제"],pk:[],ae:[],indication:[],misc:["Peptidoglycan 전구물질의 생합성을 억제한다."]},
+    "D-cycloserine":{family:"Peptidoglycan 전구물질 생합성 억제제",routes:["경구투여"],mechanism:["D-ala와 구조유사","alanine racemase 억제","D-alanyl-D-alanyl synthetase 경쟁적 억제"],pk:[],ae:[],indication:[],misc:["Peptidoglycan 전구물질의 생합성을 억제한다."]},
+    "Alafosfaline":{family:"Peptidoglycan 전구물질 생합성 억제제",routes:["경구투여"],mechanism:["alanine dipeptide 유사체","Racemase 억제"],pk:[],ae:[],indication:[],misc:["Peptidoglycan 전구물질의 생합성을 억제한다."]},
+    "β-Lactam (계열 공통)":{family:"β-Lactam",routes:["다양"],mechanism:["Penicillin Binding Protein(PBP, transpeptidase) 비가역적 억제 → 세포벽합성 X → 삼투압 유지 못해 사멸","5각형 thiazolidine ring + 4각형 β-lactam ring의 bicyclic ring에 결사슬(R) 연결 구조","결사슬(R): 페니실린계 항생제 효력과 약리학적 성질 결정","β-lactamase에 의해 분해 → 약효 소실"],pk:[],ae:[],indication:[],misc:["세균 내성: 항생제 투과율 저하 / PBP 결합력 저하 / β-lactamase 생산"]},
+    "Penicillin G (Benzyl penicillin)":{family:"Penicillin",routes:["주사(정맥, 근육)"],mechanism:["PBP 비가역적 억제 → 세포벽 합성 억제"],pk:["penicillinase에 분해됨","위산에 쉽게 파과 → R-acyl기를 다양하게 변화시켜 산에 대한 안정성 높임","6-APA(6-Aminopenicillanic acid): 6-amino기를 아실화해 새로운 반합성 penicillin 합성 기반","주로 penicillin G와 V를 amidase로 가수분해하여 얻음"],ae:["과민반응이 나타날 수 있다."],indication:[],misc:["Penicillinase에 불안정","산에 불안정 → 경구투여 불가"]},
+    "Methicillin":{family:"Penicillinase 안정 Penicillin",routes:["주사(정맥)"],mechanism:["PBP 비가역적 억제","결사슬 carbonyl기에 부피 큰 방향족 고리 → penicillinase 입체장애"],pk:["산에 불안정 → 경구투여 불가"],ae:["과민반응이 나타날 수 있다."],indication:[],misc:["Penicillinase에 안정하다.","항균범위 좁고 항균력 작음"]},
+    "Nafcillin":{family:"Penicillinase 안정 Penicillin",routes:["주사(정맥)"],mechanism:["PBP 비가역적 억제"],pk:["산에 불안정하여 경구투여가 불가하다.","위장관 흡수 불규칙 → 경구투여 부적합"],ae:["과민반응이 나타날 수 있다."],indication:[],misc:["Penicillinase에 안정하다.","주사로만 투여한다."]},
+    "Oxacillin":{family:"Penicillinase 안정 Penicillin",routes:["경구투여"],mechanism:["PBP 비가역적 억제","Isoxazole 고리 도입 → Penicillinase 저항·산에 안정"],pk:["산에 안정 → 경구투여 가능"],ae:["과민반응이 나타날 수 있다."],indication:["penicillin-G 저항성 균 감염증에 주로 사용"],misc:["Penicillinase 안정, 경구용"]},
+    "Ampicillin":{family:"Penicillinase 불안정 Penicillin",routes:["경구투여"],mechanism:["PBP 비가역적 억제","NH2기 전자흡인 → 산에 대한 안정성 큼","G(-) 투과율 높음"],pk:["위장관에서 불완전하게 흡수 → 설사","산에 안정하다."],ae:["과민반응이 나타날 수 있다.","설사 치료에 사용된다."],indication:[],misc:["Penicillinase에 불안정하다.","경구투여가 가능하다.","G(-) 광범위 항균 스펙트럼을 가진다."]},
+    "Amoxicillin":{family:"Penicillinase 불안정 Penicillin",routes:["경구투여"],mechanism:["PBP 비가역적 억제","ampicillin의 p-hydroxy 유도체"],pk:["경구투여 시 흡수율 Ampicillin보다 우수"],ae:["과민반응이 나타날 수 있다."],indication:[],misc:["Penicillinase에 불안정하다.","경구 흡수율이 우수하다."]},
+    "Piperacillin":{family:"Penicillinase 불안정 Penicillin (Acylureidopenicillin)",routes:["주사(정맥)"],mechanism:["PBP 비가역적 억제","urea기로 PBP와 결합력 우수"],pk:[],ae:["과민반응이 나타날 수 있다."],indication:["G(+)·G(-)·Pseudomonas aeruginosa 항균력"],misc:["Penicillinase에 불안정하다.","광범위 항균 스펙트럼을 가진다."]},
+    "Carbenicillin":{family:"Penicillinase 불안정 Penicillin",routes:["주사(정맥)"],mechanism:["PBP 비가역적 억제","Penicillin G에 carboxyl기 도입 → 세포투과성 증가","G(+)·G(-) 유효"],pk:["경구투여 시 산에 불안정","경구투여 시 decarboxylation → penicillin G로 분해"],ae:["과민반응이 나타날 수 있다."],indication:[],misc:["Penicillinase에 불안정하다.","Acylureidopenicillin보다 항균력 낮고 β-lactamase에 불안정"]},
+    "페니실린류 약물동태·부작용":{family:"Penicillin 계열 공통",routes:["경구","주사"],mechanism:[],pk:["초기 페니실린류: 위산에 불안정 또는 위장관 5-30% 흡수 → 경구투여 곤란","옥사실린류·아미모페니실린류: 경구 위산 안정·흡수 양호","경구용 페니실린 흡수(아목시실린 예외): 음식물 영향 → 식사 전후 2시간에 투여","혈중 반감기 짧음 → 신장을 통해 신속히 배설","프로베네시드와 함께 투여 → 배설 지연 → 혈중 농도 높게 유지","비경구투여 시 주로 정맥주사 (근육주사 시 자극·통증)"],ae:["과민반응: 저분자 페니실린 + 혈장단백질 → 불완전항원 → 과민반응","아나필락시스 발생률 0.01% (치명적)","모든 페니실린류에 교차반응 → 과민반응 시 다른 계열 대체"],indication:[],misc:[]},
+    "Clavulanic acid":{family:"β-lactamase 억제제에 해당한다.",routes:["경구투여"],mechanism:["β-lactamase의 Ser 아실화 → 비가역적 효소억제"],pk:[],ae:[],indication:["오그멘틴: amoxicillin + 클라불란산","티멘틴: ticarcillin + 클라불란산"],misc:["β-lactamase 억제제에 해당한다.","항균력 약함 → 단독사용 X, 병용"]},
+    "Sulbactam":{family:"β-lactamase 억제제에 해당한다.",routes:["경구투여"],mechanism:["β-lactam 항생제와 병용 시 상승작용"],pk:["Sutamicillin = 설박탐 전구약물 (ampicillin + sulbactam ester 화합물)","경구흡수 후 가수분해 → ampicillin + sulbactam으로 분리되어 약효"],ae:[],indication:[],misc:["β-lactamase 억제제에 해당한다."]},
+    "Cephalosporin (계열 공통)":{family:"Cephalosporin",routes:["경구","주사"],mechanism:["PBP에 결합해 세포벽 합성 억제","7-ACA 합성 선구물질","β-lactamase에 의해 가수분해"],pk:["일반적으로 위산에 불안정, 위장관 흡수 불규칙 → 경구투여 곤란","7번 축쇄 아실기 위치에 아미노기 도입 + 3번 위치 지용성 증가 → 경구투여 가능","3번 위치 acetyl기: 간 esterase에 의해 분해 → 반감기 짧은 경향","신장을 통해 배설 → 프로베네시드와 함께 투여 시 배설 지연","신장 질환자: 용량 감소"],ae:["페니실린보다 부작용·독성 비교적 적음","대부분 피부발진 등 과민반응","3번 위치 메틸테트라졸티오메틸기 → 프로트롬빈 결핍 → 출혈 (비타민 K 투여로 완화)","세팔로스포린-페니실린 교차 과민성 주의","경구 세팔로스포린 → 위장관 장애","신장 질환자 용량 감소"],indication:[],misc:["세포벽 합성을 저해하고 Peptidoglycan 연결을 억제한다."]},
+    "Cephradine (1세대)":{family:"Cephalosporin 1세대",routes:["경구투여 (예외적)"],mechanism:["PBP 결합 → 세포벽 합성 억제"],pk:["경구투여가 가능하다 (1세대 세팔로스포린 중 예외적)."],ae:["피부발진 과민반응"],indication:[],misc:["1세대 세팔로스포린에 해당한다.","1세대는 원칙적으로 경구투여 불가"]},
+    "Cefamandole (2세대)":{family:"Cephalosporin 2세대",routes:["주사(IV, IM)"],mechanism:["PBP 친화력 증가","G(-) 외막 투과력 증가","G(-) β-lactamase 저항성 증가","1세대에 비해 G(-)/혐기성균 강화된 항균력"],pk:[],ae:["3번 위치 메틸테트라졸티오메틸기 → 출혈 부작용 → 비타민 K 투여로 완화"],indication:[],misc:["2세대 세팔로스포린에 해당한다."]},
+    "Cefuroxime (2세대)":{family:"Cephalosporin 2세대",routes:["경구투여 (악세틸 전구약물)"],mechanism:["PBP 결합 → 세포벽 합성 억제"],pk:["세푸록심 악세틸(전구약물) 형태로 경구투여"],ae:["위장관 장애가 나타날 수 있다."],indication:[],misc:["2세대 세팔로스포린에 해당한다.","전구약물 형태로 경구 투여한다."]},
+    "Cefotaxime (3세대)":{family:"Cephalosporin 3세대",routes:["주사(IV, IM)"],mechanism:["PBP 결합 → 세포벽 합성 억제","1,2세대보다 G(-) 항균 효과 훨씬 강함"],pk:["혈중에서 가수분해 → 반감기 짧음"],ae:["피부발진 과민반응"],indication:["G(-) 장내세균·베타락타마제 생산균주에 유효","척수액 약물투과 잘됨 → 수막염 치료"],misc:["3세대 세팔로스포린에 해당한다."]},
+    "Ceftriaxone (3세대)":{family:"Cephalosporin 3세대",routes:["주사(IV, IM)"],mechanism:["PBP 결합 → 세포벽 합성 억제"],pk:["상대적으로 긴 반감기 → qd(1일 1회) 투여 가능"],ae:["피부발진 과민반응"],indication:["G(-) 장내세균·베타락타마제 생산균주에 유효","척수액 약물투과 잘됨 → 수막염 치료"],misc:["3세대 세팔로스포린에 해당한다.","긴 반감기 → qd 가능"]},
+    "Imipenem":{family:"Carbapenem 계열 항생제이다.",routes:["주사(정맥)"],mechanism:["Penicillin S → CH2 치환 & 고리 내 이중결합 도입 → β-lactamase 안정 & 억제","PBP 비가역적 억제"],pk:["신장에서 dehydropeptidase-1에 의해 가수분해·약효 상실 → cilastatin 병용 필수","Thienamycin의 NH2기 → N-formiminoyl기로 치환 → 불안정성 극복"],ae:[],indication:[],misc:["Carbapenem 계열 항생제이다.","가장 넓은 항균 스펙트럼","cilastatin과 병용 필수"]},
+    "Meropenem":{family:"Carbapenem 계열 항생제이다.",routes:["주사(정맥)"],mechanism:["PBP 비가역적 억제"],pk:["단독투여가 가능하다.","dehydropeptidase-1 가수분해 X","키랄 탄소 가짐"],ae:[],indication:[],misc:["Carbapenem 계열 항생제이다.","cilastatin 병용이 불필요하다."]},
+    "Aztreonam":{family:"Monobactam 계열 항생제이다.",routes:["주사(정맥)"],mechanism:["PBP 억제","항균력 낮고 화학적으로 불안정","2번 위치 α-CH3 치환 → β-lactamase에 안정"],pk:[],ae:[],indication:["주로 G(-) 세균에 항균력을 나타낸다."],misc:["Monobactam 계열 항생제이다.","화학적으로 합성한 주사용 항생제"]},
+    "Vancomycin":{family:"Glycopeptide",routes:["주사(정맥)","경구투여 (C.difficile 한정)"],mechanism:["D-ala-D-ala에 결합 → Transglycosylase·Transpeptidase 억제","글리코펩티드 항생물질, 7개 아미노산의 선형 펩티드에 당류 결합, 분자량 크고 소수성"],pk:["위장관 흡수 X → 1일 2-4회 1시간에 걸쳐 서서히 정맥주입","C.difficile 위막성 대장염에 경구 투여 가능 (장관 내 작용)"],ae:["신속 정맥주입 → 히스타민 분비 → 적인증(red man syndrome)","피부발진, 홍조, 가려움, 서맥, 혈압강하","청각신경독성 → 정기적 청력검사"],indication:["β-lactam계 과민 환자","페니실린 내성 Staphylococcus aureus (MRSA)","C.difficile 위막성 대장염 (경구)","Vancomycin 저항성 Enterococcus (VRE) → 신중 사용"],misc:["Glycopeptide 계열 항생제이다.","방향족 아미노산 포함","β-lactam계 과민 환자의 대체제로 사용된다."]},
+    "Streptogramins":{family:"Streptogramin 계열 항생제이다.",routes:["주사(정맥)"],mechanism:["50S ribosome 결합 → 단백질 합성 차단","Quinupristin + Dalfopristin 3:7 병용 → 효과 상승"],pk:[],ae:[],indication:["Vancomycin 저항성 Enterococcus 감염 치료"],misc:["Quinupristin·Dalfopristin 병용투여","병용 시 상승효과가 나타난다."]},
+    "폴리믹신 B / 클리스틴":{family:"폴리펩티드 항생물질 (전신투여 가능)",routes:["주사(정맥)"],mechanism:["G(-) 세균에만 항균활성"],pk:[],ae:["독성이 강하다."],indication:["Pseudomonas속 등의 미생물에 의한 중증 감염증 치료에만 사용"],misc:["전신투여가 가능한 폴리펩티드 항생물질이다.","폴리믹신 B: X=D-Phe / 클리스틴: X=D-Leu"]},
+    "Bacitracin / Gramicidin":{family:"폴리펩티드 항생물질 (외용)",routes:["외용 (국소)"],mechanism:["세포벽 합성 억제"],pk:["독성 강해 전신투여 불가 → 외용제로만"],ae:[],indication:["국소 감염 치료"],misc:["외용제로 사용되는 폴리펩티드 항생물질이다.","G(+)세균에 대한 강한 항균력"]}
+  },
+  "단백질 합성 억제제":{
+    "Aminoglycoside (계열 공통)":{family:"Aminoglycoside",routes:["주사(근육, 정맥)"],mechanism:["30S ribosome 결합 → tRNA의 결합 억제 → 단백질 합성 차단","G(+), G(-) 넓은 항균범위","아미노시클리톨(aminocyclitol) 모핵: 수산기·아미노기","수용성 염기성 화합물 → 지방에 거의 안 녹음"],pk:["경구투여 시 장관 내 흡수 X (ATP 소요 특수 능동 수송기전에 의해서만 수송)","양이온 수용성 물질 → 위장관 흡수X, 근육주사","중증 감염 시 30-60분에 걸쳐 점주"],ae:["이독성: 반감기 10-12시간, Mild(가역적) → Severe(영구 난청), 정기 청력검사 요함","신독성: 신기능부전·노인층에 주로 발생, 세뇨관 세포 침착, 약물 중단 시 원상 복구 가능","근신경 장애가 나타날 수 있다."],indication:["독성이 강해 주로 그람음성균 감염에만 사용한다."],misc:["내성: ①표적(리보솜) 변이 ②세포막 변화→수송력 감소 ③불활성화 효소 생산(수산기 인산화·아미노기 아세틸화·수산기 아데닐화)"]},
+    "Amikacin":{family:"Aminoglycoside (반합성)",routes:["주사"],mechanism:["30S ribosome 결합 → 단백질 합성 차단"],pk:[],ae:["이독성(청력손상)이 나타날 수 있다.","신독성이 나타날 수 있다."],indication:[],misc:["1-아미노기 아실화 → 불활성화효소 접근 X → 내성균에 유효"]},
+    "Netilmicin":{family:"Aminoglycoside (반합성)",routes:["주사"],mechanism:["30S ribosome 결합 → 단백질 합성 차단"],pk:[],ae:["이독성(청력손상)이 나타날 수 있다.","신독성이 나타날 수 있다."],indication:[],misc:["1-아미노기에 에틸기 첨가 → 불활성화효소 영향 X","젠타마이신보다 넓은 스펙트럼","내성세균에 유효"]},
+    "Macrolide (계열 공통)":{family:"Macrolide",routes:["경구투여"],mechanism:["50S ribosome 결합 → peptide 연장 억제 → 단백질 합성 차단","macrocyclic lactone ring 구조","Streptomyces에서 얻음","G(+) 세균에 대한 항균력을 가진다."],pk:[],ae:[],indication:[],misc:["12환(현재 미사용)·14환(erythromycin 등)·16환(spiramycin) 화합물로 분류"]},
+    "Erythromycin":{family:"Macrolide 14환",routes:["경구투여"],mechanism:["50S ribosome 결합 → 단백질 합성 차단"],pk:[],ae:[],indication:[],misc:["페니실린 알러지 환자에서 대체제로 사용된다."]},
+    "Azithromycin":{family:"Macrolide 15환(유도체)",routes:["경구투여"],mechanism:["50S ribosome 결합 → 단백질 합성 차단"],pk:[],ae:[],indication:["G(+) 및 Chlamydia(G(-))에 항균 효과가 있다."],misc:["Erythromycin에 비해 항균 스펙트럼이 넓어진다."]},
+    "Clindamycin":{family:"Lincosamide",routes:["경구투여"],mechanism:["50S 리보솜 결합","Macrolide 유사 작용기전·유사 약효·교차내성"],pk:["경구투여 시 흡수 잘 됨"],ae:[],indication:[],misc:["Lincosamide 계열 항생제이다.","Lincosamide 중 항균력과 지용성이 가장 크다."]},
+    "Tetracycline (계열 공통)":{family:"Tetracycline",routes:["경구투여"],mechanism:["30S 리보솜 결합 → tRNA 결합 억제 → 단백질 합성 차단","Octahydronaphtacene 유도체","양쪽성: 산·염기와 염 형성 가능","C4 위치 N 필수: N-dimethyl기 도입 → 항균력 증가"],pk:["경구투여 금속이온과 난용성 킬레이트 → 제산제·유제품 병용X"],ae:["고용량: 간독성·신독성"],indication:[],misc:[]},
+    "Chloramphenicol":{family:"Chloramphenicol",routes:["경구투여","주사"],mechanism:["50S ribosome 결합 → peptide bond 형성 억제 → 항균 작용","카이랄 탄소 2개 → 입체이성질체 4개, D-threo만 유의적 활성, (1R, 2R) 항균력 우수","진행세포 80S 리보솜과 결합 X → 선택적 독성 / 미토콘드리아 70S 리보솜 결합 → 부작용"],pk:[],ae:["골수장해: 백혈구 감소증, 재생불량성 빈혈 (용량의존적 아님, 장기간 사용 시)","클로람페니콜 결합부위 = 린코마이신·에리트로마이신 결합부위와 인접 → 상호길항"],indication:["장티푸스균, 리케차, 인플루엔자균에 유효","①베타락탐 과민반응 ②베타락탐 내성균 수막염·장티푸스 ③혐기성균 뇌농양 ④리케치아 감염증에 선택적 사용"],misc:["내성균: 2개 수산기 아세틸화 효소 생산 → 리보솜 결합X","항균범위가 넓고 가격이 저렴하다."]}
+  },
+  "항말라리아":{
+    "Chloroquine":{family:"4-aminoquinoline (Quinoline계)",routes:["경구투여"],mechanism:["적혈구 무성생식단계의 번식체를 살멸","Hemozoin polymer와 drug-heme complex 형성","pKa 8~10, 산성 식포(pH 4.8~5.2)로 이동·축적 → 원충 사멸 촉진"],pk:[],ae:[],indication:["P. vivax·P. ovale에 의한 급성 증상억제","만성관절 류마티스 치료에도 사용"],misc:["chloroquine 내성 원충이 매우 흔하게 발견된다.","4-aminoquinoline 유도체이다."]},
+    "Hydroxychloroquine":{family:"4-aminoquinoline (Quinoline계)",routes:["경구투여"],mechanism:["Hemozoin polymer와 drug-heme complex 형성"],pk:[],ae:[],indication:["류마티스관절염, 원판성 및 전신홍반루푸스","말라리아 치료 및 예방"],misc:["chloroquine에 비하여 독성이 낮음"]},
+    "Mefloquine":{family:"quinoline 4-methanol (Quinoline계)",routes:["경구투여"],mechanism:["적혈구 안에 있는 번식체에 작용"],pk:[],ae:[],indication:["P. falciparum 감염 예방과 치료","Chloroquine 내성·약물다중내성 P. fal.을 포함한 모든 말라리아 예방과 치료에 유효"],misc:["quinoline 4-methanol 유도체이다."]},
+    "Primaquine":{family:"8-amino quinoline (Quinoline계)",routes:["경구투여"],mechanism:["8-amino기의 산화로 활성산소(ROS)를 생성하여 세포를 파괴"],pk:[],ae:[],indication:[],misc:["8-amino quinoline 유도체이다."]},
+    "Pyrimethamine":{family:"DHFR 저해제 (항말라리아)",routes:["경구투여"],mechanism:["Dihydrofolate reductase(DHFR) 억제 → thymidine 생합성 차단","말라리아 원충 DHFR에 대한 친화도 >> 사람 DHFR 친화도 → 선택적 활성"],pk:[],ae:[],indication:[],misc:["항말라리아 Tetrahydrofolate 합성 억제제이다."]},
+    "Artemisinin":{family:"항말라리아 천연물",routes:["경구투여"],mechanism:["Sesquiterpene lactone endoperoxide 구조","Endoperoxide 구조 → 탄소 라디칼 형성 → 원충의 Ca2+-ATPase 공격 → 세포막 손상","Fe²⁺ ion이 endoperoxide bond와 반응 → radical → 1,5-H shift → 새로운 radical → Ca2+-ATPase 공격","1,5-H shift가 가능한 화합물은 활성 유지, 불가능하면 활성 상실"],pk:["Artemisia annua에서 분리된 천연물"],ae:[],indication:["falciparum 말라리아 및 chloroquine 저항성 말라리아에 유효"],misc:["정상 상태: Fe²⁺은 적혈구에 쌓여 artemisin에 무반응·사람에 무독성","말라리아 환자: 적혈구 분해 → heme·Fe²⁺ 노출 → artemisin과 반응"]},
+    "Artemether":{family:"Artemisinin 유도체이다.",routes:["경구투여"],mechanism:["Artemisinin과 동일 기전 (endoperoxide radical 형성)"],pk:[],ae:[],indication:[],misc:["Artemisinin 유도체이다.","mefloquine 또는 pyrimethamine/sulfa제와 병용투여"]}
+  }
+};
+
+// ============================================================
+// 헬퍼
+// ============================================================
+function allDrugs(){const l=[];for(const[s,ds] of Object.entries(DB))for(const[n,d] of Object.entries(ds))l.push({sector:s,name:n,data:d});return l;}
+function toSentence(text,cat){
+  const t=text.trim();
+  // 이미 서술식
+  if(t.endsWith('다')||t.endsWith('음')||t.endsWith('함')||t.endsWith('임')||t.endsWith('됨')||t.endsWith('X')||t.endsWith('O')||t.endsWith('.')) return t;
+  if(t.includes('→')) return t;
+  // 투여경로만 자동 변환
+  if(cat==='투여경로'){
+    if(t.includes('경구')) return '경구투여가 가능하다.';
+    if(t.includes('정맥')||t.includes('IV')) return '정맥주사로 투여한다.';
+    if(t.includes('근육')||t.includes('IM')) return '근육주사로 투여한다.';
+    if(t.includes('외용')||t.includes('국소')) return '외용(국소)으로 투여한다.';
+    return t+'로 투여한다.';
+  }
+  return t;
+}
+function getProps(d){const p=[];const a=(arr,c)=>(arr||[]).forEach(s=>{if(s.trim())p.push({text:toSentence(s,c),cat:c});});a(d.mechanism,'기전');a(d.pk,'약동학');a(d.ae,'부작용');a(d.indication,'적응증');a(d.misc,'기타');a(d.routes,'투여경로');return p;}
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function rInt(n){return Math.floor(Math.random()*n);}
+
+// ============================================================
+// 상태
+// ============================================================
+let selSec='all', selAns='random', cq=null, submitted=false, picked=new Set();
+
+function buildSectorChips(){
+  const el=document.getElementById('sector-chips');
+  let h=`<div class="chip on" data-s="all" onclick="pickSec(this)">전체</div>`;
+  Object.keys(DB).forEach(s=>{h+=`<div class="chip" data-s="${s}" onclick="pickSec(this)">${s}</div>`;});
+  el.innerHTML=h;
+}
+function pickSec(el){document.querySelectorAll('[data-s]').forEach(c=>c.classList.remove('on'));el.classList.add('on');selSec=el.dataset.s;}
+function pickAns(el){document.querySelectorAll('[data-ans]').forEach(c=>c.classList.remove('on'));el.classList.add('on');selAns=el.dataset.ans;}
+function targetDrugs(){const a=allDrugs();return selSec==='all'?a:a.filter(d=>d.sector===selSec);}
+
+// ============================================================
+// 퀴즈 생성
+// ============================================================
+function generateQuiz(){
+  submitted=false; picked.clear();
+  document.getElementById('rp').className='rp';
+  document.getElementById('btn-sub').disabled=true;
+  document.getElementById('sel-counter').textContent='';
+
+  const drugs=targetDrugs();
+  if(drugs.length<4){alert('섹터에 약물이 부족합니다.');return;}
+
+  const ansCount= selAns==='random'?(Math.random()<0.5?1:2):parseInt(selAns);
+
+  // 전체 약물에서 각 텍스트의 출현 빈도 계산 (공유 특성 필터링용)
+  const allDrugsList = allDrugs();
+  const textFreq = new Map();
+  allDrugsList.forEach(d=>{
+    getProps(d.data).forEach(p=>{
+      textFreq.set(p.text, (textFreq.get(p.text)||0)+1);
+    });
+  });
+  // 3개 이상 약물에 등장하는 텍스트 = 공유 특성 → 오답으로 쓰면 안 됨
+  const SHARED_THRESHOLD = 3;
+  const sharedTexts = new Set([...textFreq.entries()].filter(([,c])=>c>=SHARED_THRESHOLD).map(([t])=>t));
+
+  let drug,props,tries=0;
+  do{drug=drugs[rInt(drugs.length)];props=getProps(drug.data);tries++;}
+  while(props.length<ansCount+1&&tries<20);
+  if(props.length<ansCount+1){generateQuiz();return;}
+
+  // 정답 선지: 공유 특성도 정답으로는 OK (해당 약물의 실제 특성이니까)
+  const correctProps=shuffle(props).slice(0,ansCount);
+
+  // 오답 선지: 정답 약물 전체 특성 + 공유 특성 모두 제외
+  const allCorrectTexts = new Set(props.map(p=>p.text));
+  const others=shuffle(allDrugsList.filter(d=>d.name!==drug.name));
+  const wrongPool=[];
+  const usedText=new Set(correctProps.map(p=>p.text));
+  for(const od of others.slice(0,20)){
+    getProps(od.data).forEach(p=>{
+      if(
+        !usedText.has(p.text) &&
+        !allCorrectTexts.has(p.text) &&
+        !sharedTexts.has(p.text)  // ← 공유 특성 제외
+      ){
+        wrongPool.push({...p,src:od.name,srcSec:od.sector});
+        usedText.add(p.text);
+      }
+    });
+    if(wrongPool.length>=(5-ansCount)*4)break;
+  }
+  const wrongProps=shuffle(wrongPool).slice(0,5-ansCount);
+  if(wrongProps.length<5-ansCount){generateQuiz();return;}
+
+  const allOpts=shuffle([
+    ...correctProps.map(p=>({text:p.text,isAns:true,src:drug.name})),
+    ...wrongProps.map(p=>({text:p.text,isAns:false,src:p.src,srcSec:p.srcSec}))
+  ]);
+  const ansIdx=allOpts.map((o,i)=>o.isAns?i:-1).filter(i=>i>=0);
+
+  cq={drug,allOpts,ansIdx,ansCount};
+
+  // 렌더 — 태그에 정답 개수 노출 없음
+  const nums=['①','②','③','④','⑤'];
+  document.getElementById('quiz-tags').innerHTML=`
+    <span class="qtag qtag-s">${drug.sector}</span>
+    <span class="qtag qtag-f">${drug.data.family}</span>`;
+
+  // 발문: 랜덤=모두고르시오(개수비공개), 1개/2개=개수명시
+  const verb = selAns==='random'
+    ? '옳은 것을 <strong>모두</strong> 고르시오.'
+    : `옳은 것을 <strong>${ansCount}개</strong> 고르시오.`;
+  document.getElementById('quiz-q').innerHTML=`다음 중 <span class="dhl">${drug.name}</span>에 대해 ${verb}`;
+
+  // 초기 제출 버튼: 랜덤은 1개 이상 선택 시 활성 → 처음엔 비활성
+  document.getElementById('btn-sub').disabled=true;
+
+  document.getElementById('opts').innerHTML=allOpts.map((o,i)=>`
+    <button class="opt" id="opt-${i}" onclick="toggleOpt(this,${i})">
+      <span class="opt-n">${nums[i]}</span>
+      <span class="opt-t">${o.text}</span>
+    </button>`).join('');
+}
+
+function updateCounter(){
+  const c=document.getElementById('sel-counter');
+  if(!cq){c.textContent='';return;}
+  if(selAns==='random'){
+    // 랜덤: 몇 개 골랐는지만 표시
+    c.textContent=picked.size>0?`${picked.size}개 선택됨`:'';
+    c.className='sel-counter'+(picked.size>0?' ready':'');
+  } else {
+    // 고정: N/M 카운터
+    if(cq.ansCount===1){c.textContent='';return;}
+    const n=picked.size,total=cq.ansCount;
+    c.textContent=`${n} / ${total} 선택`;
+    c.className='sel-counter'+(n===total?' ready':'');
+  }
+}
+
+function toggleOpt(el,idx){
+  if(submitted||!cq)return;
+  if(selAns==='random'){
+    // 랜덤: 자유롭게 토글, 최소 1개 이상이면 제출 가능
+    if(picked.has(idx)){picked.delete(idx);el.classList.remove('sel');}
+    else{picked.add(idx);el.classList.add('sel');}
+    document.getElementById('btn-sub').disabled=picked.size===0;
+  } else if(cq.ansCount===1){
+    document.querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+    picked.clear(); el.classList.add('sel'); picked.add(idx);
+    document.getElementById('btn-sub').disabled=false;
+  } else {
+    if(picked.has(idx)){picked.delete(idx);el.classList.remove('sel');}
+    else if(picked.size<cq.ansCount){picked.add(idx);el.classList.add('sel');}
+    document.getElementById('btn-sub').disabled=picked.size!==cq.ansCount;
+  }
+  updateCounter();
+}
+
+function submitAnswer(){
+  if(!cq||submitted)return;
+  submitted=true;
+  const ansSet=new Set(cq.ansIdx);
+  // 랜덤이든 고정이든 채점 기준은 동일: 고른 것이 정답 집합과 정확히 일치
+  const ok=[...picked].every(i=>ansSet.has(i))&&picked.size===ansSet.size;
+  const nums=['①','②','③','④','⑤'];
+
+  document.querySelectorAll('.opt').forEach((b,i)=>{
+    b.disabled=true; b.classList.remove('sel');
+    if(ansSet.has(i))b.classList.add('correct');
+    else if(picked.has(i))b.classList.add('wrong');
+  });
+
+  const rp=document.getElementById('rp');
+  rp.className=`rp show ${ok?'pass':'fail'}`;
+  document.getElementById('r-icon').textContent=ok?'✓':'✗';
+  document.getElementById('r-verd').textContent=ok?'정답입니다!':'오답입니다.';
+
+  let body='';
+
+  // 틀린 선지 해설
+  const wrongPicked=[...picked].filter(i=>!ansSet.has(i));
+  if(wrongPicked.length>0){
+    body+=`<div class="expl-sec"><div class="expl-lbl">// 내가 고른 오답</div>`;
+    wrongPicked.forEach(i=>{
+      const o=cq.allOpts[i];
+      body+=`<div class="expl-it w-it">
+        <span class="ex-num">${nums[i]}</span>
+        <div>
+          <div class="ex-txt">${o.text}</div>
+          <div class="ex-why">→ 이 내용은 <strong>${o.src}</strong>의 특성입니다. <strong>${cq.drug.name}</strong>에는 해당하지 않습니다.</div>
+        </div></div>`;
+    });
+    body+=`</div>`;
+  }
+
+  // 놓친 정답
+  const missed=cq.ansIdx.filter(i=>!picked.has(i));
+  if(missed.length>0){
+    body+=`<div class="expl-sec"><div class="expl-lbl">// 놓친 정답</div>`;
+    missed.forEach(i=>{
+      const o=cq.allOpts[i];
+      body+=`<div class="expl-it c-it">
+        <span class="ex-num">${nums[i]}</span>
+        <div>
+          <div class="ex-txt">${o.text}</div>
+          <div class="ex-why">→ <strong>${cq.drug.name}</strong>의 특성입니다.</div>
+        </div></div>`;
+    });
+    body+=`</div>`;
+  }
+
+  // 모든 오답 선지 출처 (항상 표시)
+  const wrongAll=cq.allOpts.map((o,i)=>({...o,i})).filter(o=>!o.isAns);
+  body+=`<div class="expl-sec"><div class="expl-lbl">// 오답 선지 출처</div>`;
+  wrongAll.forEach(o=>{
+    body+=`<div class="expl-it w-it">
+      <span class="ex-num">${nums[o.i]}</span>
+      <div>
+        <div class="ex-txt">${o.text}</div>
+        <div class="ex-why">→ 실제로는 <strong>${o.src}</strong> (${o.srcSec||''})의 특성</div>
+      </div></div>`;
+  });
+  body+=`</div>`;
+
+  document.getElementById('r-body').innerHTML=body;
+  document.getElementById('btn-sub').disabled=true;
+  document.getElementById('sel-counter').textContent='';
+}
+
+// ============================================================
+// 검색
+// ============================================================
+function buildAllList(){
+  document.getElementById('all-list').innerHTML=allDrugs().map(d=>`
+    <div class="drow" onclick="showDrug('${d.name.replace(/'/g,"\\'")}')">
+      <span class="drow-nm">${d.name}</span>
+      <span class="drow-mt">${d.sector}</span>
+    </div>`).join('');
+}
+
+function doSearch(){
+  const q=document.getElementById('s-inp').value.trim().toLowerCase();
+  if(!q){goBack();return;}
+  const matches=allDrugs().filter(d=>d.name.toLowerCase().includes(q)||(d.data.family||'').toLowerCase().includes(q));
+  document.getElementById('s-default').style.display='none';
+  const res=document.getElementById('s-res');
+  res.classList.add('show');
+  if(matches.length===0){document.getElementById('drug-detail').innerHTML='<div class="no-res">검색 결과가 없습니다.</div>';return;}
+  if(matches.length===1){renderDrugDetail(matches[0]);return;}
+  document.getElementById('drug-detail').innerHTML=`
+    <div class="list-lbl" style="margin-bottom:14px">${matches.length}개 결과</div>
+    <div class="dlist">${matches.map(d=>`
+      <div class="drow" onclick="showDrug('${d.name.replace(/'/g,"\\'")}')">
+        <span class="drow-nm">${d.name}</span><span class="drow-mt">${d.sector}</span>
+      </div>`).join('')}</div>`;
+}
+
+function showDrug(name){
+  const drug=allDrugs().find(d=>d.name===name);
+  if(!drug)return;
+  document.getElementById('s-default').style.display='none';
+  document.getElementById('s-res').classList.add('show');
+  renderDrugDetail(drug);
+}
+
+function renderDrugDetail(drug){
+  const safeName=drug.name.replace(/[^a-zA-Z0-9]/g,'_');
+  const sec=(title,arr)=>{
+    if(!arr||!arr.length)return'';
+    return`<div class="pb"><div class="pb-head">${title}</div><div class="pb-items">${arr.map(s=>`<div class="pb-it">${s}</div>`).join('')}</div></div>`;
+  };
+  document.getElementById('drug-detail').innerHTML=`
+    <div class="dc">
+      <div class="dc-top">
+        <div>
+          <div class="dc-name">${drug.name}</div>
+          <div class="dc-tags">
+            <span class="dtag dtag-s">${drug.sector}</span>
+            <span class="dtag dtag-f">${drug.data.family||''}</span>
+            ${(drug.data.routes||[]).map(r=>`<span class="dtag dtag-r">${r}</span>`).join('')}
+          </div>
+        </div>
+        <div class="struct-box" id="struct-${safeName}"><div class="struct-msg">로딩중...</div></div>
+      </div>
+      <div class="dc-body">
+        ${sec('작용기전 / 특성',drug.data.mechanism)}
+        ${sec('약물동태',drug.data.pk)}
+        ${sec('부작용',drug.data.ae)}
+        ${sec('적응증',drug.data.indication)}
+        ${sec('기타',drug.data.misc)}
+      </div>
+    </div>`;
+  loadStruct(drug.name, safeName);
+}
+
+function goBack(){
+  document.getElementById('s-default').style.display='';
+  document.getElementById('s-res').classList.remove('show');
+  document.getElementById('drug-detail').innerHTML='';
+  document.getElementById('s-inp').value='';
+}
+
+async function loadStruct(name,safe){
+  const el=document.getElementById(`struct-${safe}`);
+  if(!el)return;
+  const eng=name.match(/[A-Za-z][A-Za-z0-9\s\-]*/)?.[0]?.trim();
+  if(!eng||eng.length<3){el.innerHTML='<div class="struct-msg">구조식 없음</div>';return;}
+  const img=new Image();
+  img.onload=()=>{el.innerHTML='';img.style.cssText='max-width:150px;max-height:100px;filter:invert(.9) sepia(.05)';el.appendChild(img);};
+  img.onerror=()=>{el.innerHTML='<div class="struct-msg">구조식 없음</div>';};
+  img.src=`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(eng)}/PNG?image_size=200x120`;
+}
+
+// ============================================================
+// 탭
+// ============================================================
+function switchTab(tab,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(`page-${tab}`).classList.add('active');
+  el.classList.add('active');
+}
+
+// init
+buildSectorChips();
+buildAllList();
+generateQuiz();
+</script>
+</body>
+</html>
